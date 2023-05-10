@@ -6,7 +6,7 @@ function TodoForm({addTodo}) {
     const [value, setValue] = useState('');
     const [charactor, setCharactor] = useState({});
     const [charactors, setCharactors] = useState(["celebi", "ditto", "dragonite"]);
-    const [joke, setJoke] = useState("")
+    const [cleanedCharactors, setcleanedCharactors] = useState([])
 
     useEffect(()=>{
       getCharactors()
@@ -37,6 +37,8 @@ function TodoForm({addTodo}) {
             console.log(cleanedData.data.name)
             console.log(cleanedData.data.sprites.front_default)
             console.log("------------")
+            var char = {name: leanedData.data.name, sprite: cleanedData.data.sprites.front_default}
+
             // console.log("Inside use effect with data")
             // setCharactor(cleanedData.data)
           })
