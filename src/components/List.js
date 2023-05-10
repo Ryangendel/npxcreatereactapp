@@ -61,7 +61,7 @@ function List(){
     return(
       <div>
         {todos.map((todo, i) => <div key={i} id={i} onClick={removeTodo}>{todo.text}</div>)}
-        <TodoForm addTodo={addTodo}/>
+        {/* <TodoForm addTodo={addTodo}/> */}
       </div>);
   }
  
