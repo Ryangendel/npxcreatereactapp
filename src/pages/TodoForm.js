@@ -1,72 +1,107 @@
 import List from "../components/List";
-import React, { useState,useEffect } from "react";
-import axios from "axios"
+import React, { useState, useEffect } from "react";
+import axios, { all } from "axios"
+import PokeCard from "../components/pokeCard"
 
-function TodoForm({addTodo}) {
-    const [value, setValue] = useState('');
-    const [charactor, setCharactor] = useState({});
-    const [charactors, setCharactors] = useState(["celebi", "ditto", "dragonite"]);
-    const [cleanedCharactors, setcleanedCharactors] = useState([])
+function TodoForm({ addTodo }) {
+  const [life, setLife] = useState({ lifeAbsorbed: 0, nameOfPokemon: "Ditto" })
+  const [value, setValue] = useState('');
+  const [pokemonName, setPokemonName] = useState('');
+  const [charactor, setCharactor] = useState({});
+  const [charactors, setCharactors] = useState(["celebi", "ditto", "dragonite"]);
+  const [aggrigatedCharactors, setAggrigatedCharactors] = useState([])
 
-    useEffect(()=>{
-      getCharactors()
-     
-    },[])
+  //Snorlax
 
-    useEffect(()=>{
-      console.log("YOUR VALUE HAS CHANGE, CLEARLY WNET UP!")
-    },[value])
+  useEffect(() => {
+    getCharactors()
+  }, [])
 
-    //[{name:"Runa",id:123, adopted:true} ,{name:"Skadi":id:1234, adopted:false} ]
-//CRUD
-    const handleSubmit = e => {
-        e.preventDefault();
-        if (!value) return;
-        console.log("INSIDE THE HANDLE SUBMIT FUNCTION, if youre great job")
-        console.log(value)
-        addTodo(value)
-        setValue('');
-      }
+  useEffect(() => {
+    getCharactors()
+  }, [charactors])
 
-      const getCharactors=()=>{
-//["Celebi", "Ditto", "Dragonite"]
-        charactors.forEach((poke)=>{
-          console.log(`https://pokeapi.co/api/v2/pokemon/${poke}`)
-          axios.get(`https://pokeapi.co/api/v2/pokemon/${poke}`)
-          .then((cleanedData)=>{
-            console.log(cleanedData.data.name)
-            console.log(cleanedData.data.sprites.front_default)
-            console.log("------------")
-            var char = {name: leanedData.data.name, sprite: cleanedData.data.sprites.front_default}
+  useEffect(() => {
+    console.log("WHEN AM I FIREING OFF")
+  }, [aggrigatedCharactors])
 
-            // console.log("Inside use effect with data")
-            // setCharactor(cleanedData.data)
-          })
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (!value) return;
+    console.log("INSIDE THE HANDLE SUBMIT FUNCTION, if youre great job")
+    console.log(value)
+    addTodo(value)
+    setValue('');
+  }
+
+  const makePokeCall = e => {
+    e.preventDefault();
+
+    axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`)
+      .then((cleanedData) => {
+       console.log("CLEANED DATA FROM POKEMON CALL")
+        console.log(cleanedData.data.name)
+        setCharactors([...charactors, cleanedData.data.name])
+
+      })
+      setPokemonName('');
+  }
+
+
+
+  const getCharactors = async () => {
+
+    var allCharactors = []
+
+    for (let i = 0; i < charactors.length; i++) {
+      await axios.get(`https://pokeapi.co/api/v2/pokemon/${charactors[i]}`)
+        .then((cleanedData) => {
+          var char = { name: cleanedData.data.name, image: cleanedData.data.sprites.front_default }
+          console.log("INSIDE THE HANDLE SUBMIT FUNCTION")
+          console.log(char)
+          console.log("INSIDE THE HANDLE SUBMIT FUNCTION")
+          allCharactors = [...allCharactors, char]
         })
-     
-      }
+    }
 
-    return (
-      <div className="apple">
-        <form onSubmit ={handleSubmit}>
+    setAggrigatedCharactors(allCharactors)
+  }
+
+  return (
+    <div className="apple">
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           className="input"
           value={value}
           placeholder="Add Todo..."
           onChange={e => setValue(e.target.value)} />
-    </form>
-    {/* <button onClick={activateLasers()}> */}
-    {/* <button onMouseOver={(e)=>{activateLasers(e)}}>
+      </form>
+
+      {/* <PokeCard pokeCharactor={life} setLife={setLife}/>
+          {charactor.base_experience} */}
+      <PokeCard aggrigatedCharactors={aggrigatedCharactors} />
+
+      <form onSubmit={makePokeCall}>
+        <input
+          type="text"
+          className="input"
+          value={pokemonName}
+          placeholder="Name a pokemon"
+          onChange={e => setPokemonName(e.target.value)} />
+      </form>
+    </div>
+  );
+}
+export default TodoForm;
+
+//NOTES BELOW -----------------------------------------------------------
+{/* {charactor.sprites.front_shiny} */ }
+
+{/* <img src={charactor.sprites.front_shiny} alt="Girl in a jacket" width="50" height="60"></img> */ }
+{/* <button onClick={activateLasers()}> */ }
+{/* <button onMouseOver={(e)=>{activateLasers(e)}}>
         Activate Lasers
    </button> */}
-          {charactor.base_experience}
-          {/* {charactor.sprites.front_shiny} */}
 
-          {/* <img src={charactor.sprites.front_shiny} alt="Girl in a jacket" width="50" height="60"></img> */}
-    <h1>hello</h1>
-    </div>
-    );
-}
-
-export default TodoForm;
