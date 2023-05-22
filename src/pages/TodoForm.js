@@ -1,9 +1,12 @@
 import List from "../components/List";
+import {useParams} from "react-router-dom"
 import React, { useState, useEffect } from "react";
 import axios, { all } from "axios"
 import PokeCard from "../components/pokeCard"
 
 function TodoForm({ addTodo }) {
+  const {pokemonCharacter, id, banana} = useParams()
+  
   const [life, setLife] = useState({ lifeAbsorbed: 0, nameOfPokemon: "Ditto" })
   const [value, setValue] = useState('');
   const [pokemonName, setPokemonName] = useState('');
@@ -12,9 +15,15 @@ function TodoForm({ addTodo }) {
   const [aggrigatedCharactors, setAggrigatedCharactors] = useState([])
 
   //Snorlax
+  
 
   useEffect(() => {
+    console.log("llllllllllllllllll")
+    console.log(id)
+    console.log(banana)
+    console.log("llllllllllllllllll")
     getCharactors()
+    pokemonCharacter? getDynamicPokemon():console.log("not a actual character")
   }, [])
 
   useEffect(() => {
@@ -33,6 +42,18 @@ function TodoForm({ addTodo }) {
     console.log(value)
     addTodo(value)
     setValue('');
+  }
+
+  const getDynamicPokemon = e => {
+
+    axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonCharacter.toLowerCase()}`)
+      .then((cleanedData) => {
+       console.log("CLEANED DATA FROM POKEMON CALL")
+        console.log(cleanedData.data.name)
+        setCharactors([...charactors, cleanedData.data.name])
+
+      })
+      setPokemonName('');
   }
 
   const makePokeCall = e => {

@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import TodoForm from "../pages/TodoForm";
+import {Link} from "react-router-dom"
+import {usePokeContext} from "../utils/PokeContext"
+
 
 function List(){
+    const {dogName, joke, setDogName} = usePokeContext()
     const [todos, setTodos] = useState([
       {
         text: 'Wake Up',
@@ -62,7 +66,17 @@ function List(){
       <div>
         {todos.map((todo, i) => <div key={i} id={i} onClick={removeTodo}>{todo.text}</div>)}
         {/* <TodoForm addTodo={addTodo}/> */}
-      </div>);
+        <Link to={"/pokeapi/gyarados"}>gyarados</Link>
+        <br></br>
+        <Link to={"/pokeapi/Charizard"}>Charizard</Link>
+        <br></br>
+        <Link to={"/pokeapi/Gengar"}>Gengar</Link>
+        <br></br>
+        <Link to={"/pokeapi/Eevee"}>Eevee</Link>
+      <h1>{dogName}</h1>
+      <h3>{joke}</h3>
+      </div>
+      );
   }
  
   
